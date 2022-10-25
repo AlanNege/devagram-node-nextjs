@@ -2,9 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type {respostaPadraoMsg} from '../../types/respostaPadraoMsg';
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
 import {conectarMongoDB}  from '../../middlewares/conectarMongoDB';
-import { usuarioModel } from "../../models/usuarioModel";
+import { UsuarioModel } from "../../models/UsuarioModel";
 import nc from 'next-connect';
 import {upload, uploadImagemCosmic} from '../../services/uploadImagemCosmic';
+import { politicaCORS } from "../../middlewares/politicaCORS";
 
 const handler = nc()
     .use(upload.single('file'))
@@ -12,7 +13,7 @@ const handler = nc()
         try{
             // se eu quero alterar o usuario preciso pegar ele no DB
             const {userId}=req?.query;
-            const usuario = await usuarioModel.findById(userId);
+            const usuario = await UsuarioModel.findById(userId);
             // se  o usuario retornou algo e pq ele xiste se nao retornou
             // ele nao exsite
             if(!usuario){
@@ -32,7 +33,7 @@ const handler = nc()
                 }
             }
 
-            await usuarioModel
+            await UsuarioModel
                 .findByIdAndUpdate({_id:usuario._id}, usuario);
             return res.status(200).json({msg:'Usuario alterado com sucesso'});
 
@@ -49,7 +50,7 @@ const handler = nc()
         try{
             // como eu busco todos os dados do meu usuario?
             const {userId} = req?.query;
-            const usuario= await usuarioModel.findById(userId);
+            const usuario= await UsuarioModel.findById(userId);
             usuario.senha= null;
             return res.status(200).json(usuario);
         }catch(e){
@@ -65,4 +66,4 @@ const handler = nc()
         }
     }
 
-export default validarTokenJWT(conectarMongoDB(handler));
+export default politicaCORS(validarTokenJWT(conectarMongoDB(handler)));

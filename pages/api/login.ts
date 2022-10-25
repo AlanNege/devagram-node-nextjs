@@ -3,8 +3,9 @@ import { conectarMongoDB } from "../../middlewares/conectarMongoDB";
 import type { respostaPadraoMsg } from "../../types/respostaPadraoMsg";
 import type { LoginResposta } from "../../types/LoginResposta";
 import md5 from 'md5';
-import { usuarioModel } from "../../models/usuarioModel";
+import { UsuarioModel } from "../../models/UsuarioModel";
 import jwt from 'jsonwebtoken'; 
+import { politicaCORS } from "../../middlewares/politicaCORS";
 
 
 const endPointLogin = async (
@@ -20,7 +21,7 @@ const endPointLogin = async (
     if(req.method === 'POST'){
         const {login, senha} = req.body;
     
-        const usuariosEncontrados = await usuarioModel.find({email:login, senha:md5(senha)});
+        const usuariosEncontrados = await UsuarioModel.find({email:login, senha:md5(senha)});
         if(usuariosEncontrados && usuariosEncontrados.length > 0){
             const usuarioEncontrado = usuariosEncontrados[0];
 
@@ -35,4 +36,4 @@ const endPointLogin = async (
     return res.status(405).json({erro: 'Metodo informado nao e valido'});    
 }
 
-export default conectarMongoDB(endPointLogin); 
+export default politicaCORS(conectarMongoDB(endPointLogin)); 

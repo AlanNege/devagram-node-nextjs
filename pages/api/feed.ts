@@ -2,15 +2,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type {respostaPadraoMsg} from '../../types/respostaPadraoMsg';
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
 import {conectarMongoDB}  from '../../middlewares/conectarMongoDB';
-import { usuarioModel } from "../../models/usuarioModel";
-import {PublicacaoModel} from '../../models/PublicacaoModel'
+import { UsuarioModel } from "../../models/UsuarioModel";
+import {PublicacaoModel} from '../../models/PublicacaoModel';
+import { politicaCORS } from "../../middlewares/politicaCORS";
 
 
 const feedEndpoint = async (req : NextApiRequest, res: NextApiResponse<respostaPadraoMsg | any>) =>{
     try{
         if(req.method === 'GET'){
             if(req?.query?.id){
-                const usuario = await usuarioModel.findById(req?.query?.id);
+                const usuario = await UsuarioModel.findById(req?.query?.id);
                 if(!usuario){
                     return res.status(400).json ({erro:'Usuario nao encontrado'});
                 }
@@ -27,4 +28,4 @@ const feedEndpoint = async (req : NextApiRequest, res: NextApiResponse<respostaP
     }
     res.status(400).json ({erro:'Nao foi possivel obter o feed'});
 }
-export default validarTokenJWT(conectarMongoDB(feedEndpoint));
+export default politicaCORS(validarTokenJWT(conectarMongoDB(feedEndpoint)));

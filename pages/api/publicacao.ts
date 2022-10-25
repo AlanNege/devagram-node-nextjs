@@ -5,13 +5,15 @@ import { upload, uploadImagemCosmic } from '../../services/uploadImagemCosmic';
 import { conectarMongoDB } from '../../middlewares/conectarMongoDB';
 import {validarTokenJWT} from '../../middlewares/validarTokenJWT';
 import { PublicacaoModel } from '../../models/PublicacaoModel';
-import {usuarioModel} from '../../models/usuarioModel'
+import {UsuarioModel} from '../../models/UsuarioModel'
+import { politicaCORS } from '../../middlewares/politicaCORS';
+
 const handler = nc ()
     .use(upload.single('file'))
     .post(async(req: any, res:NextApiResponse<respostaPadraoMsg>)=>{
         try{
             const {userId} = req.query;
-            const usuario = await usuarioModel.findById(userId);
+            const usuario = await UsuarioModel.findById(userId);
              if(!usuario){
                 return res.status(400).json({erro: 'Usuario nao encontrado'}); 
              }
@@ -58,4 +60,4 @@ export const config = {
     }
 }
 
-export default validarTokenJWT(conectarMongoDB(handler));
+export default politicaCORS(validarTokenJWT(conectarMongoDB(handler)));
