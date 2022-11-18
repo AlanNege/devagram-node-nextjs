@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { conectarMongoDB } from "../../middlewares/conectarMongoDB";
 import { politicaCORS } from "../../middlewares/politicaCORS";
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
-import { UsuarioModel } from "../../models/UsuarioModel";
+import { usuarioModel } from "../../models/usuarioModel";
 import type { respostaPadraoMsg } from "../../types/respostaPadraoMsg"; 
 
 
@@ -11,7 +11,7 @@ const pesquisaEndpoint
     try{
         if(req.method === 'GET'){
             if(req?.query?.id){
-                const usuarioEncontrado = await UsuarioModel.findById(req?.query?.id);
+                const usuarioEncontrado = await usuarioModel.findById(req?.query?.id);
                 if(!usuarioEncontrado){
                     return res.status(400).json({erro:'Usuario nao encontrado'});
                 }
@@ -23,7 +23,7 @@ const pesquisaEndpoint
                     return res.status(400).json({erro:'Favor informar pelo menos 2 caracteres para a busca'});
                 }        
             
-                const usuariosEncontrados = await UsuarioModel.find({
+                const usuariosEncontrados = await usuarioModel.find({
                     $or: [{ nome : {$regex:filtro, $options:'i'}},
                    //{ email: {$regex:filtro, $options:'i'}}
                 ]  
