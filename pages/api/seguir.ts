@@ -3,7 +3,7 @@ import { conectarMongoDB } from '../../middlewares/conectarMongoDB';
 import { politicaCORS } from '../../middlewares/politicaCORS';
 import { validarTokenJWT } from '../../middlewares/validarTokenJWT';
 import { SeguidorModel } from '../../models/SeguidorModel';
-import { UsuarioModel } from '../../models/UsuarioModel';
+import { usuarioModel } from '../../models/usuarioModel';
 import type { respostaPadraoMsg } from '../../types/respostaPadraoMsg';
 
 const endpointSeguir = 
@@ -14,13 +14,13 @@ const endpointSeguir =
             const {userId, id} = req?.query;
 
             // usuario logado/autenticado = quem esta fazendo as acoes
-            const usuarioLogado = await UsuarioModel.findById(userId);
+            const usuarioLogado = await usuarioModel.findById(userId);
             if(!usuarioLogado){
                 return res.status(400).json({erro : 'Usuario logado nao encontrado'});
             }
 
             // id do usuario e ser seguidor - query
-            const usuarioASerSeguido = await UsuarioModel.findById(id);
+            const usuarioASerSeguido = await usuarioModel.findById(id);
             if(!usuarioASerSeguido){
                 return res.status(400).json({ erro : 'Usuario a ser seguido nao encontrado'});
             }
@@ -34,9 +34,9 @@ const endpointSeguir =
                     await SeguidorModel.findByIdAndDelete({_id : e._id}));
                 
                 usuarioLogado.seguindo--;
-                await UsuarioModel.findByIdAndUpdate({_id : usuarioLogado._id}, usuarioLogado);
+                await usuarioModel.findByIdAndUpdate({_id : usuarioLogado._id}, usuarioLogado);
                 usuarioASerSeguido.seguidores--;
-                await UsuarioModel.findByIdAndUpdate({_id : usuarioASerSeguido._id}, usuarioASerSeguido);
+                await usuarioModel.findByIdAndUpdate({_id : usuarioASerSeguido._id}, usuarioASerSeguido);
 
                 return res.status(200).json({msg : 'Deixou de seguir o usuario com sucesso'});
             }else{
@@ -49,11 +49,11 @@ const endpointSeguir =
 
                 // adicionar um seguindo no usuario logado
                 usuarioLogado.seguindo++;
-                await UsuarioModel.findByIdAndUpdate({_id : usuarioLogado._id}, usuarioLogado);
+                await usuarioModel.findByIdAndUpdate({_id : usuarioLogado._id}, usuarioLogado);
 
                 // adicionar um seguidor no usuario seguido
                 usuarioASerSeguido.seguidores++;
-                await UsuarioModel.findByIdAndUpdate({_id : usuarioASerSeguido._id}, usuarioASerSeguido);
+                await usuarioModel.findByIdAndUpdate({_id : usuarioASerSeguido._id}, usuarioASerSeguido);
 
                 return res.status(200).json({msg : 'Usuario seguido com sucesso'});
             }

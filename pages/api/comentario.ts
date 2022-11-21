@@ -2,20 +2,20 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { respostaPadraoMsg } from "../../types/respostaPadraoMsg";
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
 import { conectarMongoDB } from "../../middlewares/conectarMongoDB";
-import { UsuarioModel } from "../../models/UsuarioModel";
-import { PublicacaoModel } from "../../models/PublicacaoModel";
+import { usuarioModel } from "../../models/usuarioModel";
+import { publicacaoModel } from "../../models/publicacaoModel";
 import { politicaCORS } from "../../middlewares/politicaCORS";
 
 const comentarioEndpoint = async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) =>{
     try{
         if(req.method === 'PUT'){
             const {userId, id} = req.query;
-            const usuarioLogado = await UsuarioModel.findById(userId);
+            const usuarioLogado = await usuarioModel.findById(userId);
             if(!usuarioLogado){
                 return res.status(400).json({erro:'Usuario nao encontrado'});
             }
 
-            const publicacao = await PublicacaoModel.findById(id);
+            const publicacao = await publicacaoModel.findById(id);
             if(!publicacao){
                 return res.status(400).json({erro:'Publicacao nao encontrada'})
             }
@@ -31,7 +31,7 @@ const comentarioEndpoint = async (req: NextApiRequest, res: NextApiResponse<resp
             }
 
             publicacao.comentarios.push(comentario);
-            await PublicacaoModel.findByIdAndUpdate({_id: publicacao._id}, publicacao)
+            await publicacaoModel.findByIdAndUpdate({_id: publicacao._id}, publicacao)
             return res.status(200).json({msg:'Comentario add com sucesso'})
 
 
