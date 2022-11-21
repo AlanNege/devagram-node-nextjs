@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type { respostaPadraoMsg } from "../../types/respostaPadraoMsg";
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
 import { conectarMongoDB } from "../../middlewares/conectarMongoDB";
-import { usuarioModel } from "../../models/usuarioModel";
+import { UsuarioModel } from "../../models/UsuarioModel";
 import { publicacaoModel } from "../../models/publicacaoModel";
 import { politicaCORS } from "../../middlewares/politicaCORS";
 
@@ -10,7 +10,7 @@ const comentarioEndpoint = async (req: NextApiRequest, res: NextApiResponse<resp
     try{
         if(req.method === 'PUT'){
             const {userId, id} = req.query;
-            const usuarioLogado = await usuarioModel.findById(userId);
+            const usuarioLogado = await UsuarioModel.findById(userId);
             if(!usuarioLogado){
                 return res.status(400).json({erro:'Usuario nao encontrado'});
             }

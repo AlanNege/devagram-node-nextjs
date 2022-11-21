@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import type {respostaPadraoMsg} from '../../types/respostaPadraoMsg';
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
 import {conectarMongoDB}  from '../../middlewares/conectarMongoDB';
-import { usuarioModel } from "../../models/usuarioModel";
+import { UsuarioModel } from "../../models/UsuarioModel";
 import { SeguidorModel } from "../../models/SeguidorModel";
 import {publicacaoModel} from '../../models/publicacaoModel';
 import { politicaCORS } from "../../middlewares/politicaCORS";
@@ -12,7 +12,7 @@ const feedEndpoint = async (req : NextApiRequest, res: NextApiResponse<respostaP
     try{
         if(req.method === 'GET'){
             if(req?.query?.id){
-                const usuario = await usuarioModel.findById(req?.query?.id);
+                const usuario = await UsuarioModel.findById(req?.query?.id);
                 if(!usuario){
                     return res.status(400).json ({erro:'Usuario nao encontrado'});
                 }
@@ -23,7 +23,7 @@ const feedEndpoint = async (req : NextApiRequest, res: NextApiResponse<respostaP
             }else{
 
                 const {userId} = req.query;
-                const usuarioLogado = await usuarioModel.findById(userId);
+                const usuarioLogado = await UsuarioModel.findById(userId);
                 if(!usuarioLogado){
                     return res.status(400).json({erro:'Usuario nao encontrado'});
                     
@@ -42,7 +42,7 @@ const feedEndpoint = async (req : NextApiRequest, res: NextApiResponse<respostaP
 
                 const result = [];
                 for (const publicacao of publicacoes){
-                    const usuarioDaPublicacao = await usuarioModel.findById(publicacao.idUsuario);
+                    const usuarioDaPublicacao = await UsuarioModel.findById(publicacao.idUsuario);
                     if(usuarioDaPublicacao){
                         const final = {...publicacao._doc, usuario:{
                             nome: usuarioDaPublicacao.nome,

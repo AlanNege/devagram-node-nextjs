@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { respostaPadraoMsg } from "../../types/respostaPadraoMsg";
 import type { cadastroRequisicao } from "../../types/cadastroRequisicao"; 
-import { usuarioModel } from "../../models/usuarioModel";
+import { UsuarioModel } from "../../models/UsuarioModel";
 import { conectarMongoDB } from "../../middlewares/conectarMongoDB";
 import md5 from 'md5';
 import {upload, uploadImagemCosmic} from '../../services/uploadImagemCosmic';
@@ -28,7 +28,7 @@ const handler = nc()
         }
             
             // validacao se ja existe usuario com mesmo email
-        const usuariosComMesmoEmail= await usuarioModel.find({email:usuario.email});
+        const usuariosComMesmoEmail= await UsuarioModel.find({email:usuario.email});
         if(usuariosComMesmoEmail && usuariosComMesmoEmail.length > 0){
             return res.status(400).json({erro: 'Ja existe uma conta com o email informado'})
         }
@@ -44,7 +44,7 @@ const handler = nc()
             avatar: image?.media?.url
         }
 
-        await usuarioModel.create(usuarioASerSalvo);
+        await UsuarioModel.create(usuarioASerSalvo);
         return res.status(200).json({msg: 'Usuario criado com sucesso'});
         
     });

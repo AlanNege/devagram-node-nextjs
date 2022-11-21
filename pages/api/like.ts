@@ -4,7 +4,7 @@ import { politicaCORS } from "../../middlewares/politicaCORS";
 import { validarTokenJWT } from "../../middlewares/validarTokenJWT";
 import type { respostaPadraoMsg } from "../../types/respostaPadraoMsg";
 import { publicacaoModel } from "../../models/publicacaoModel";
-import { usuarioModel } from "../../models/usuarioModel";
+import { UsuarioModel } from "../../models/UsuarioModel";
 
 
 const likeEndpoint
@@ -21,7 +21,7 @@ const likeEndpoint
 
             //id do usuario que ta cutindo a publicacao
             const {userId} = req?.query;
-            const usuario = await usuarioModel.findById(userId);
+            const usuario = await UsuarioModel.findById(userId);
             if(!usuario){
               return res.status(400).json({erro:'Usuario nao encontrado'});
            }

@@ -50,7 +50,7 @@ const handler = nc()
         try{
             // como eu busco todos os dados do meu usuario?
             const {userId} = req?.query;
-            const usuario= await usuarioModel.findById(userId);
+            const usuario= await UsuarioModel.findById(userId);
             console.log('usuario', usuario);
             usuario.senha= null;
             return res.status(200).json(usuario);
